@@ -1,0 +1,44 @@
+%Load images
+IntensityImage = niftiread('ICBMlores.nii.gz');
+LabelImage     = niftiread('ICBMGMWMCSFlores.nii.gz');
+%Extract non-background data
+labelmask = LabelImage(:);
+intensitydata = IntensityImage(:);
+labelsubset = labelmask(labelmask>0);
+intensitysubset =  intensitydata(labelmask>0);
+
+%Sort the intensity values
+max_gain = -Inf;
+maxiter = 0;
+
+for i = round(min(intensitysubset)):round(max(intensitysubset))
+    
+    mid = i;
+    
+    [iimg_sort, iimg_idx] = sort(IntensityImage, 'ascend');
+    limg_sort = LabelImage(iimg_idx);
+    [isub_sort, isub_idx] = sort(intensitysubset, 'ascend');
+    lsub_sort = labelsubset(isub_idx);
+    
+    Initial = [sum(labelsubset == 1), sum(labelsubset ==2), sum(labelsubset ==3)];
+    left_img = isub_sort(isub_sort < mid);
+    right_img = isub_sort(isub_sort >= mid);
+    left_lab = lsub_sort(1:numel(left_img));
+    right_lab = lsubsort(numel(left_img)+1:end);
+    
+    GREYCSF = [sum(left_lab == 1), sum(left_lab == 2), sum(left_lab == 3)];
+    WHITE = [sum(right_lab == 1), sum(right_lab == 2), sum(right_lab == 3)];
+    
+    %verify split
+    verify = sum(GREYCSF) + sum(WHITE) - sum(Initial)
+    
+    %compute discrete probabilities
+    pdfInitial = 1 / sum(Initial) * Initial;
+    pdfGREYSCF = 1 / sum(GREYCSF) * GREYCSF;
+    pdfWHITE = 1 / sum(WHITE) * WHITE;
+    
+%Compute initial entropy
+    EntropyBefore = -sum(pdfInitial .*log(pdfInitial))
+%Compute max information gain/intensity threshold and store in the maxInformationGain/intensityMaxInformationGain variables
+%intensityMaxInformationGain = 
+%maxInformationGain = 
