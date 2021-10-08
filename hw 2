@@ -1,0 +1,23 @@
+https://github.com/esnoddy1/imaging.git
+
+vol1 = niftiread('ICBMlores.nii.gz');
+vol2 = niftiread('brainT1clores.nii.gz');
+figure(1); imagesc(vol1(:,:,64) ); colormap gray
+figure(2); imagesc(vol2(:,:,64) ); colormap gray
+
+a = vol1;
+b = vol2;
+
+% Mean Sq Error
+MSQ = sum((a(:) - b(:)).^2) / numel(a) %numel returns number of elements in a table
+
+% NCC
+a_num = a(:) - mean(a(:));
+b_num = b(:) - mean(b(:));
+
+numerator = (dot(a_num, b_num))^2; 
+
+a_norm = sqrt(sum(a_num.^2));
+b_norm = sqrt(sum(b_num.^2));
+
+NCC = - numerator/(a_norm^2 * b_norm^2);
