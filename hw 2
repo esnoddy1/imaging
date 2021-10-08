@@ -21,3 +21,47 @@ a_norm = sqrt(sum(a_num.^2));
 b_norm = sqrt(sum(b_num.^2));
 
 NCC = - numerator/(a_norm^2 * b_norm^2);
+
+MI
+
+a = a(:);
+
+min1 = min(a); max1 = max(a);
+intensity_range = (max1-min1);
+bin_size = (max1 - min1)/nbins;
+
+probability = zeros(nbins+1,1);
+for iii = 1:length(a);
+    idx = floor((a(iii)-min1)/bin_size)+1;
+    probability(idx) = probability(idx)+1;
+end
+
+probability = probability/length(a);
+entropy_a = -sum(probability.*log(probability))
+
+b = b(:);
+
+min2 = min(b); max2 = max(b);
+bin_size_2 = (max2 - min2)/nbins;
+
+prob_2 = zeros(nbins+1,1);
+for jjj = 1:length(b);
+    index = floor((b(jjj)-min2)/bin_size_2)+1;
+    prob_2(index) = prob_2(index)+1;
+end
+
+prob_2 = prob_2/length(b)
+%entropy_b = -sum(prob_b.*log(prob_b))
+
+indrow = double(a(:)) + 1;
+indcol = double(b(:)) + 1;
+
+%Finding joint entropy
+for i=1:length(a)
+    for j=1:length(b)
+        for k = 1:size(indrow)
+         %count number of occurences where i== indrow(k) and j == indcol(k)
+        end
+       %set h(i,j) = count value you get from previous loop 
+    end
+end
